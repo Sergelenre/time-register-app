@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "757719017682",
+    "project_id": "time-registration-app",
+    "storage_bucket": "time-registration-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757719017682:android:117e7df6f694359534250b",
+        "android_client_info": {
+          "package_name": "com.time_registration.timo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757719017682-r5isbmnglpj58o3l9vhg09jdsr210mce.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxSkOeWQo30ul9MnLoZoPnpf3AjkyZUq8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757719017682-r5isbmnglpj58o3l9vhg09jdsr210mce.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
