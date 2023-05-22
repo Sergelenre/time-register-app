@@ -45,7 +45,7 @@ TextFormField reusableTextField(String text, IconData icon, bool isPasswordType,
 String nulll = "";
 String validatePassword(String value) {
   if (!(value.length > 5) && value.isNotEmpty) {
-    return "Password should contain more than 6 characters";
+    return "Нууц үг хамгийн багадаа 6 тэмдэгт байх ёстой";
   }
   return nulll;
 }
@@ -53,7 +53,7 @@ String validatePassword(String value) {
 String validateEmail(String value) {
   print("aaa");
   if (!value.isNotEmpty) {
-    return "Enter correctly pls";
+    return "Цахим хаяг аа зөв хийнэ үү";
   }
   return nulll;
 }
@@ -62,26 +62,26 @@ Container signInSignUpButton(
     BuildContext context, bool isLogin, Function onTap) {
   return Container(
     width: MediaQuery.of(context).size.width,
-    height: 60,
+    height: 52,
     margin: const EdgeInsets.only(top: 20),
-    decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+    decoration: BoxDecoration(borderRadius: BorderRadius.circular(25)),
     child: ElevatedButton(
       onPressed: () {
         onTap();
       },
       child: Text(
-        isLogin ? 'LOGIN' : 'SIGN UP',
+        isLogin ? 'LOGIN' : 'Бүртгүүлэх',
         style: TextStyle(color: Colors.white),
       ),
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.pressed)) {
-              return Colors.black;
+              return Color(0xFF6750A4);
             }
-            return Color.fromARGB(255, 15, 15, 15);
+            return Color(0xFF6750A4);
           }),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)))),
     ),
   );
 }

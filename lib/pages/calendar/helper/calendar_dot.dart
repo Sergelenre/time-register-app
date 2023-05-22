@@ -9,15 +9,14 @@ class CalendarDot extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 2),
-      height: 10,
-      width: 10,
+      height: 7,
+      width: 7,
       decoration: const BoxDecoration(
-        color: Color.fromARGB(255, 0, 88, 170),
+        color: Color(0xFF21005D),
       ),
       child: Text(
         ".",
-        style: const TextStyle(
-            fontSize: 10, color: Color.fromARGB(255, 0, 88, 170)),
+        style: const TextStyle(fontSize: 10, color: Color(0xFF21005D)),
       ),
     );
   }

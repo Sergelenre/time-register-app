@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:timo/pages/auth/sign_in.dart';
-import 'package:timo/pages/auth/sign_up.dart';
-import 'package:timo/pages/navigator/navigtor.dart';
+import 'package:timo/splash.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,24 +20,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  int _currentIndex = 0;
-  bool isLogin = true;
-
-  final screens = [
-    const SignInScreen(),
-    const SignUpScreen(),
-    const BottomNavigationScreen(),
-  ];
-
-  Future<void> _checkScreen() async {
-    if (isLogin) {
-      _currentIndex = 2;
-    } else {
-      _currentIndex = 0;
-    }
-    // _currentIndex = 1;  SignUp
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
@@ -57,7 +37,7 @@ class _MyAppState extends State<MyApp> {
         primaryColor: Colors.blue,
       ),
       home: Scaffold(
-        body: screens[2],
+        body: SplashScreen(),
       ),
     );
   }

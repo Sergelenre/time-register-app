@@ -6,16 +6,17 @@ class StartButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 80,
       decoration: BoxDecoration(
-        border:
-            Border.all(width: 6, color: const Color.fromARGB(255, 20, 20, 20)),
-        borderRadius: BorderRadius.circular(20),
-        color: const Color.fromARGB(255, 61, 207, 163),
+        borderRadius: BorderRadius.circular(50),
+        color: const Color(0xFF6750A4),
       ),
-      padding: const EdgeInsets.only(right: 40, left: 40, top: 20, bottom: 20),
-      child: const Text(
-        'Ирсэн',
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      child: Center(
+        child: const Text(
+          'Ирсэн',
+          style: TextStyle(
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
       ),
     );
   }

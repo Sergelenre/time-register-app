@@ -1,29 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timo/domain/other/get_name.dart';
+import 'package:timo/pages/auth/sign_up.dart';
 
 final storage = new FlutterSecureStorage();
 String identifier = "";
 String startTime = "";
 String endTime = "";
-
-// Future<void> checkUser(
-//     {required String name, required String identifier}) async {
-//   final snapshot = await FirebaseFirestore.instance
-//       .collection('workers')
-//       .where('name', isEqualTo: name)
-//       .get();
-//   if (snapshot.docs.isNotEmpty) {
-//     return;
-//   } else {
-//     final docWorker = FirebaseFirestore.instance.collection('workers').doc();
-//     final json = {
-//       'name': name,
-//       'device': identifier,
-//     };
-//     await docWorker.set(json);
-//   }
-// }
 
 Future createStartDate(
     {required String name,
@@ -45,13 +30,15 @@ Future createStartDate(
     querysnapshot.docs.forEach((document) {
       findDay = true;
     });
-
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email');
     if (findDay) {
       print("olson");
     } else {
       print("oldogui");
       final json = {
         'name': name,
+        'email': email,
         'device': identifier,
         'arrival': formattedDate,
         'date': formattedDateMY,
@@ -91,8 +78,11 @@ Future getdocId({required String name, required String identifier}) async {
       final minutes = duration.inMinutes.remainder(60);
       print(
           'Time difference: ${hours.toInt()} hours ${minutes.toInt()} minutes');
+      final prefs = await SharedPreferences.getInstance();
+      final email = prefs.getString('email');
       final json = {
         'name': document.get('name'),
+        'email': email,
         'device': document.get('device'),
         'arrival': document.get('arrival'),
         'date': document.get('date'),

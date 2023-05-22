@@ -22,15 +22,15 @@ class List extends StatelessWidget {
         children: [
           Text(
             style: const TextStyle(color: Colors.black),
+            '${data.docs[index]['date']}',
+          ),
+          Text(
+            style: const TextStyle(color: Colors.black),
             '${data.docs[index]['arrival']}',
           ),
           Text(
             style: const TextStyle(color: Colors.black),
             '${data.docs[index]['endDate']}',
-          ),
-          Text(
-            style: const TextStyle(color: Colors.black),
-            '${data.docs[index]['date']}',
           ),
           Text(
             style: const TextStyle(color: Colors.black),

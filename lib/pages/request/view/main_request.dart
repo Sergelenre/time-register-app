@@ -23,7 +23,9 @@ class _RequestScreenState extends State<RequestScreen> {
   void savedRole() async {
     WidgetsFlutterBinding.ensureInitialized();
     final prefs = await SharedPreferences.getInstance();
-    role = prefs.getString('role');
+    setState(() {
+      role = prefs.getString('role');
+    });
     print("role");
     print(role);
   }
@@ -50,7 +52,7 @@ class _RequestScreenState extends State<RequestScreen> {
                   ReqButtons(),
                   InkWell(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) => RequestListScreen()));

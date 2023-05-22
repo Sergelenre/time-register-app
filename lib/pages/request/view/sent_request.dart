@@ -1,26 +1,27 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:timo/pages/request/view/vac_request_detail.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 
 import '../../navigator/navigtor.dart';
-import '../widgets/leave_list.dart';
-import '../widgets/vac_list.dart';
+import '../../navigator/slide_tab_bar.dart';
+import '../widgets/sent_leave.dart';
+import '../widgets/sent_vac.dart';
 
-class RequestListScreen extends StatefulWidget {
-  const RequestListScreen({Key? key}) : super(key: key);
+class SentRequests extends StatefulWidget {
+  const SentRequests({super.key});
 
   @override
-  State<RequestListScreen> createState() => _RequestListScreenState();
+  State<SentRequests> createState() => _SentRequestsState();
 }
 
-class _RequestListScreenState extends State<RequestListScreen>
+class _SentRequestsState extends State<SentRequests>
     with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   late TabController tabController;
+
   @override
   void initState() {
     tabController = TabController(length: 2, vsync: this);
-    _streamVRequestItems = _referenceVacationList.snapshots();
-
     super.initState();
   }
 
@@ -30,15 +31,8 @@ class _RequestListScreenState extends State<RequestListScreen>
     super.dispose();
   }
 
-  CollectionReference _referenceVacationList =
-      FirebaseFirestore.instance.collection("vacations");
-  Stream<QuerySnapshot>? _streamVRequestItems;
-
   @override
   Widget build(BuildContext context) {
-    _referenceVacationList.get();
-    _referenceVacationList.snapshots();
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -52,10 +46,15 @@ class _RequestListScreenState extends State<RequestListScreen>
           },
         ),
         title: Text(
-          'Ирсэн хүсэлтүүд',
+          'Илгээсэн хүсэлтүүд',
           style: TextStyle(color: Colors.black),
         ),
         backgroundColor: Colors.transparent,
+      ),
+      endDrawer: Drawer(
+        backgroundColor: Color(0xFFE7E0EC),
+        width: 200,
+        child: SideTabBar(),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -74,7 +73,6 @@ class _RequestListScreenState extends State<RequestListScreen>
                   child: Column(
                     children: [
                       TabBar(
-                        unselectedLabelColor: Colors.grey,
                         indicatorSize: TabBarIndicatorSize.label,
                         indicatorColor: Color(0xFF6750A4),
                         labelColor: Color(0xFF6750A4),
@@ -91,8 +89,8 @@ class _RequestListScreenState extends State<RequestListScreen>
                   child: TabBarView(
                     controller: tabController,
                     children: [
-                      VacationList(),
-                      LeaveList(),
+                      SentVac(),
+                      SentLeave(),
                     ],
                   ),
                 )

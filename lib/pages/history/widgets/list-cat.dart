@@ -9,15 +9,15 @@ class ListCate extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: const [
         Text(
+          "Огноо",
+          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+        ),
+        Text(
           "Ирсэн",
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         Text(
           "Явсан",
-          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "Сар",
           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
         ),
         Text(

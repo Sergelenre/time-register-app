@@ -1,73 +1,69 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/src/widgets/placeholder.dart';
 
-class Approve extends StatefulWidget {
-  const Approve({Key? key}) : super(key: key);
+class FirstApprover extends StatefulWidget {
+  const FirstApprover({super.key});
 
   @override
-  State<Approve> createState() => _ApproveState();
+  State<FirstApprover> createState() => _FirstApproverState();
 }
 
-class _ApproveState extends State<Approve> {
-  List<String> itemsleader = ['Sukhee', 'Magnai', 'Dambii'];
-  List<String> itemspm = ['Batsaihan', 'Uynga', 'Amarjargal'];
-  String dropdownValueleader = 'Sukhee';
-  String dropdownValuepm = 'Batsaihan';
+class _FirstApproverState extends State<FirstApprover> {
+  List<String> admin = ["Galaa ah"];
+  List<String> itemsPmLeader = ["Batsaihan"];
+  String dropdownValueAdmin = 'Galaa ah';
+  String dropdownValuePmLeader = 'Batsaihan';
+  Future<void> fetchData() async {
+    final QuerySnapshot<Map<String, dynamic>> snapshot =
+        await FirebaseFirestore.instance.collection('workers').get();
+    final List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+        snapshot.docs;
+    documents.forEach((doc) {
+      final String name = doc.get('name');
+      final String role = doc.get('role');
+      if (role == 'Team Leader' || role == 'PM') {
+        setState(() {
+          itemsPmLeader.add(name);
+          dropdownValuePmLeader = name;
+        });
+      } else if (role == 'Admin') {
+        setState(() {
+          admin.add(name);
+          dropdownValueAdmin = name;
+        });
+      }
+      print("itemspm");
+      print(itemsPmLeader);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 30.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Text("Эхний зөвшөөрөл"),
-              SizedBox(width: 20),
-              Container(
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: DropdownButton<String>(
-                  value: dropdownValuepm,
-                  items: itemspm.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                        value: value, child: Text(value));
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValuepm = newValue ?? '';
-                    });
-                  },
-                ),
-              ),
-            ],
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Дараагийн зөвшөөрөл :"),
+        SizedBox(width: 20),
+        Container(
+          padding: EdgeInsets.only(right: 18, left: 10),
+          decoration:
+              BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
+          child: DropdownButton<String>(
+            value: dropdownValueAdmin,
+            items: admin.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(value: value, child: Text(value));
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValueAdmin = newValue ?? '';
+              });
+            },
           ),
-          Row(
-            children: [
-              Text("Дараагийн зөвшөөрөл"),
-              SizedBox(width: 20),
-              Container(
-                padding: EdgeInsets.only(right: 10, left: 10),
-                decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.black)),
-                child: DropdownButton<String>(
-                  value: dropdownValueleader,
-                  items:
-                      itemsleader.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                        value: value, child: Text(value));
-                  }).toList(),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValueleader = newValue ?? '';
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

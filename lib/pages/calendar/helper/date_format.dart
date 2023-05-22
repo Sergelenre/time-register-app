@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../domain/device/dev_id.dart';
 
@@ -20,10 +21,12 @@ int endminutes = 0;
 int seconds = 0;
 var number = 0;
 void dates() async {
-  String? deviceId1 = await getDeviceId();
+  final prefs = await SharedPreferences.getInstance();
+  final email = prefs.getString('email');
+  myMap = {};
   FirebaseFirestore.instance
       .collection("users")
-      .where('device', isEqualTo: deviceId1)
+      .where('email', isEqualTo: email)
       .snapshots()
       .listen((querySnapshot) {
     querySnapshot.docs.forEach(

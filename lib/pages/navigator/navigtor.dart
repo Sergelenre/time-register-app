@@ -21,7 +21,6 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     const HomeScreen(),
     const HistoryScreen(),
     CalendarScreen(),
-    RequestScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -30,9 +29,10 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
       bottomNavigationBar: SizedBox(
         height: 70,
         child: BottomNavigationBar(
-          backgroundColor: const Color.fromARGB(255, 15, 15, 15),
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
+          elevation: 0.0,
+          backgroundColor: const Color(0xFFE7E0EC),
+          selectedItemColor: Color.fromARGB(255, 19, 19, 19),
+          unselectedItemColor: Color.fromARGB(255, 19, 19, 19),
           iconSize: 30,
           selectedFontSize: 12,
           unselectedFontSize: 10,
@@ -45,31 +45,27 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
           items: const [
             BottomNavigationBarItem(
               icon: Icon(
+                size: 20,
                 Icons.home_rounded,
-                color: Colors.white,
+                color: Color.fromARGB(255, 19, 19, 19),
               ),
-              label: "Home",
+              label: "Нүүр",
             ),
             BottomNavigationBarItem(
               icon: Icon(
+                size: 20,
                 Icons.history_rounded,
-                color: Colors.white,
+                color: Color.fromARGB(255, 19, 19, 19),
               ),
-              label: "History",
+              label: "Түүх",
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.calendar_month_outlined,
-                color: Colors.white,
+                size: 20,
+                color: Color.fromARGB(255, 19, 19, 19),
               ),
-              label: "Calendar",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.note_outlined,
-                color: Colors.white,
-              ),
-              label: "Requests",
+              label: "Календар",
             ),
           ],
         ),

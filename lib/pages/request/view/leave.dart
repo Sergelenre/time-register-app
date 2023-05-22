@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../navigator/navigtor.dart';
+import '../../navigator/slide_tab_bar.dart';
 
 class LeaveFormScreen extends StatefulWidget {
   const LeaveFormScreen({super.key});
@@ -19,10 +21,10 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
 
   DateTime _startDate = DateTime.now();
   DateTime _endDate = DateTime.now();
-  List<String> admin = ["Galaa ah", "Ambo", "Uyanga"];
-  List<String> itemsPmLeader = ["Batsaihan"];
-  String dropdownValueAdmin = 'Galaa ah';
-  String dropdownValuePmLeader = 'Batsaihan';
+  List<String> admin = [" "];
+  List<String> itemsPmLeader = [" "];
+  String dropdownValueAdmin = ' ';
+  String dropdownValuePmLeader = ' ';
 
   Future<void> fetchData() async {
     final QuerySnapshot<Map<String, dynamic>> snapshot =
@@ -49,6 +51,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
   }
 
   final TextEditingController _textController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -104,188 +107,264 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
     }
   }
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text(
-          'Чөлөө',
-          style: TextStyle(color: Colors.black),
-        ),
+        elevation: 0.0,
         leading: IconButton(
-          color: Colors.black,
-          icon: Icon(Icons.arrow_back),
+          icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                     builder: (context) => BottomNavigationScreen()));
           },
         ),
+        title: Text(
+          'Чөлөөний хүсэлт',
+          style: TextStyle(color: Colors.black),
+        ),
+        backgroundColor: Colors.transparent,
       ),
-      body: Column(children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 20),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {
-                  _selectStartDate(context);
-                },
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    '${_startDate.year}-${_startDate.month}-${_startDate.day} ${_startDate.hour}:${_startDate.minute}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-              SizedBox(width: 30),
-              Icon(Icons.arrow_forward_outlined, color: Colors.grey),
-              SizedBox(width: 30),
-              InkWell(
-                onTap: () {
-                  _selectEndDate(context);
-                },
-                child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                    ),
-                  ),
-                  child: Text(
-                    '${_endDate.year}-${_endDate.month}-${_endDate.day} ${_endDate.hour}:${_endDate.minute}',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: TextField(
-            minLines: 5,
-            controller: _textController,
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            decoration: InputDecoration(
-              contentPadding:
-                  EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-              hintText: 'Шалтгаан',
-              border: OutlineInputBorder(),
-            ),
-            style: TextStyle(fontSize: 16),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 30.0),
-          child: Column(
-            children: [
-              Row(
+      endDrawer: Drawer(
+        backgroundColor: Color(0xFFE7E0EC),
+        width: 200,
+        child: SideTabBar(),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.only(left: 30, right: 30),
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Эхний зөвшөөрөл"),
-                  SizedBox(width: 20),
-                  Container(
-                    padding: EdgeInsets.only(right: 10, left: 10),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black)),
-                    child: DropdownButton<String>(
-                      value: dropdownValuePmLeader,
-                      items: itemsPmLeader
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value, child: Text(value));
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValuePmLeader = newValue ?? '';
-                        });
-                      },
+                  InkWell(
+                    onTap: () {
+                      _selectStartDate(context);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: 4, top: 15, bottom: 15, right: 4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        border: Border.all(width: 1, color: Colors.grey),
+                      ),
+                      child: Text(
+                        '${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')} ${_startDate.hour.toString().padLeft(2, '0')}:${_startDate.minute.toString().padLeft(2, '0')}',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+                  Text("to"),
+                  InkWell(
+                    child: Container(
+                      padding: EdgeInsets.only(
+                          left: 4, top: 15, bottom: 15, right: 4),
+                      child: Text(
+                        '${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')} ${_endDate.hour.toString().padLeft(2, '0')}:${_endDate.minute.toString().padLeft(2, '0')}',
+                        style: TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 ],
               ),
-              Row(
-                children: [
-                  Text("Дараагийн зөвшөөрөл"),
-                  SizedBox(width: 20),
-                  Container(
-                    padding: EdgeInsets.only(right: 10, left: 10),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.black)),
-                    child: DropdownButton<String>(
-                      value: dropdownValueAdmin,
-                      items:
-                          admin.map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                            value: value, child: Text(value));
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownValueAdmin = newValue ?? '';
-                        });
-                      },
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Form(
+                key: _formKey,
+                child: TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Шалтгаан аа бичнэ үү';
+                    }
+                    return null;
+                  },
+                  minLines: 5,
+                  controller: _textController,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Color(0xFFF7F2FA))),
+                    filled: true,
+                    fillColor: Color(0xFFF7F2FA),
+                    hintText: 'Шалтгаан',
+                    hintStyle: TextStyle(
+                      color: Color(0xFF79747E),
                     ),
                   ),
-                ],
+                ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Эхний :"),
+                    SizedBox(width: 20),
+                    Container(
+                      width: 190.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(width: 1, color: Colors.grey)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: DropdownButton<String>(
+                          icon: Visibility(
+                              visible: false,
+                              child: Icon(Icons.arrow_downward)),
+                          value: dropdownValuePmLeader,
+                          items: itemsPmLeader
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownValuePmLeader = newValue ?? '';
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Дараагийн :"),
+                    SizedBox(width: 20),
+                    Container(
+                      width: 190.0,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          border: Border.all(width: 1, color: Colors.grey)),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: DropdownButton<String>(
+                          icon: Visibility(
+                              visible: false,
+                              child: Icon(Icons.arrow_downward)),
+                          underline: Container(),
+                          value: dropdownValueAdmin,
+                          items: admin
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                                value: value, child: Text(value));
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownValueAdmin = newValue ?? '';
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            SizedBox(height: 80),
+            InkWell(
+              onTap: () async {
+                if (_formKey.currentState != null &&
+                    _formKey.currentState!.validate()) {
+                  final FirebaseFirestore firestore =
+                      FirebaseFirestore.instance;
+                  final prefs = await SharedPreferences.getInstance();
+                  final name = prefs.getString('name');
+                  final Map<String, dynamic> data = {
+                    'name': name,
+                    'startDate': _startDate,
+                    'endDate': _endDate,
+                    'reason': _textController.text,
+                    'Approver': [
+                      {
+                        "name": dropdownValuePmLeader,
+                        "status": "Хүлээгдэж байна....",
+                        "date": "Хүлээгдэж байна...",
+                      },
+                      {
+                        "name": dropdownValueAdmin,
+                        "status": "Хүлээгдэж байна...",
+                        "date": "Хүлээгдэж байна...",
+                      },
+                    ],
+                    'Approvers': [dropdownValuePmLeader, dropdownValueAdmin],
+                  };
+                  firestore.collection('leave').add(data).then((value) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Color(0xFF6750A4),
+                      duration: Duration(seconds: 1),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height - 170,
+                          right: 20,
+                          left: 20),
+                      content: Text(
+                        'Амжилттай',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ));
+                  }).catchError((error) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      backgroundColor: Color(0xFF6750A4),
+                      duration: Duration(seconds: 1),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).size.height,
+                          right: 20,
+                          left: 20),
+                      content: Text(
+                        'Амжилтгүй',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                    ));
+                  });
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => BottomNavigationScreen()));
+                }
+              },
+              child: Container(
+                height: 52,
+                margin: EdgeInsets.only(top: 80),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25),
+                  color: const Color(0xFF6750A4),
+                ),
+                child: Center(
+                  child: Text(
+                    'Илгээх',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ]),
         ),
-        InkWell(
-          onTap: () {
-            final FirebaseFirestore firestore = FirebaseFirestore.instance;
-            final Map<String, dynamic> data = {
-              // 'name': _nameController.text,
-              'startDate': _startDate,
-              'endDate': _endDate,
-              'reason': _textController.text,
-              'leader&PMApproval': dropdownValuePmLeader,
-              'adminApproval': dropdownValueAdmin,
-            };
-            firestore.collection('leave').add(data).then((value) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("SUCCESS")),
-              );
-            }).catchError((error) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("UNSUCCESS")),
-              );
-            });
-          },
-          child: Container(
-            margin: EdgeInsets.only(top: 20, bottom: 20),
-            padding:
-                EdgeInsets.only(right: 140, left: 140, top: 10, bottom: 10),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
-              color: Color.fromARGB(255, 36, 36, 36),
-            ),
-            child: Text(
-              'Илгээх',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 16.0,
-              ),
-            ),
-          ),
-        )
-      ]),
+      ),
     );
   }
 }
