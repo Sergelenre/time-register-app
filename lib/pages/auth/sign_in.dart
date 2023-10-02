@@ -2,24 +2,32 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timo/pages/auth/sign_up.dart';
-
-import '../navigator/navigtor.dart';
+import 'package:timo/pages/navigator/navigtor.dart';
+// import 'package:timo/navigator/navigtor.dart';
+// import 'package:timo/pages/signUpPage.dart';
 
 class SignInScreen extends StatefulWidget {
-  const SignInScreen({super.key});
+  const SignInScreen({Key? key});
 
   @override
   State<SignInScreen> createState() => _SignInScreenState();
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final passwordTextController = TextEditingController();
+  final emailTextController = TextEditingController();
   String role = "";
   String name = "";
   String email = "";
-  final passwordTextController = TextEditingController();
-  final emailTextController = TextEditingController();
+  String? passwordError;
+  String? emailError;
+
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
 
   Future<void> getData() async {
     print("asdadd");
@@ -43,64 +51,72 @@ class _SignInScreenState extends State<SignInScreen> {
     prefs.setString('role', role);
     prefs.setString('email', email);
     prefs.setString('name', name);
-
-    Navigator.pushReplacement(context,
-        MaterialPageRoute(builder: (context) => BottomNavigationScreen()));
   }
 
-  String? passwordError = "";
-  String? emailError = "";
-
-  final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
   Future<void> signIn() async {
     setState(() {
       _isLoading = true;
+      passwordError = null;
+      emailError = null;
     });
+
     try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailTextController.text,
         password: passwordTextController.text,
       );
+      await getData();
+      Fluttertoast.showToast(
+        msg: "Амжилттай",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Color.fromARGB(255, 50, 138, 91),
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => BottomNavigationScreen()),
+      );
     } on FirebaseAuthException catch (e) {
-      String errorMessage = '';
-      if (e.code == 'user-not-found') {
-        errorMessage = 'Хэрэглэгч олдсонгүй';
-        emailTextController.clear();
-      } else if (e.code == 'wrong-password') {
-        errorMessage = 'Нууц үг буруу байна';
-        passwordTextController.clear();
-      } else if (e.code == 'invalid-email') {
-        errorMessage = 'Цахим хаяг буруу байна';
-        emailTextController.clear();
-      }
-      if (errorMessage.isNotEmpty) {
-        setState(() {
-          emailError = errorMessage;
-        });
-      }
+      setState(() {
+        if (e.code == 'user-not-found') {
+          emailError = 'Хэрэглэгч олдсонгүй';
+        } else if (e.code == 'wrong-password') {
+          passwordError = 'Нууц үг буруу байна';
+        } else if (e.code == 'invalid-email') {
+          emailError = 'Цахим хаяг буруу байна';
+        }
+      });
+    } catch (e) {
+      print('Error during sign-in: $e');
     }
+
     setState(() {
       _isLoading = false;
     });
-    getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               child: Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    Image.asset('assets/imgs/logo.jpg', width: 280),
-                    SizedBox(height: 40),
+                    Image.asset(
+                      'assets/imgs/logo.jpg',
+                      width: 280,
+                    ),
+                    const SizedBox(height: 40),
                     TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -115,10 +131,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       cursorColor: Colors.grey,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: TextStyle(color: Colors.grey),
+                        icon: Icon(
+                          Ionicons.mail_outline,
+                          color: Color.fromARGB(255, 187, 187, 187),
+                        ),
+                        labelText: 'Цахим хаяг',
+                        labelStyle: TextStyle(color: Colors.grey, fontSize: 13),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(),
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 212, 212, 212)),
                         ),
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
@@ -126,13 +148,12 @@ class _SignInScreenState extends State<SignInScreen> {
                         ),
                         errorText: emailError,
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Colors.grey,
-                          ),
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(color: Colors.red),
                         ),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     TextFormField(
                       validator: (value) {
                         if (value!.isEmpty) {
@@ -147,14 +168,22 @@ class _SignInScreenState extends State<SignInScreen> {
                       cursorColor: Colors.grey,
                       textInputAction: TextInputAction.next,
                       decoration: InputDecoration(
+                        icon: Icon(
+                          Ionicons.lock_closed_outline,
+                          color: Color.fromARGB(255, 187, 187, 187),
+                        ),
                         enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey)),
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(
+                              color: const Color.fromARGB(255, 212, 212, 212)),
+                        ),
                         errorText: passwordError,
                         errorBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey),
+                          borderRadius: BorderRadius.circular(25.0),
+                          borderSide: BorderSide(color: Colors.red),
                         ),
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: Colors.grey),
+                        labelStyle: TextStyle(color: Colors.grey, fontSize: 13),
                         border: OutlineInputBorder(),
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey),
@@ -162,46 +191,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       obscureText: true,
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: Size.fromHeight(52),
-                          backgroundColor: Color(0xFF6750A4),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: Size.fromHeight(52),
+                        backgroundColor: Color.fromARGB(255, 51, 51, 51),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
-                        child: Text('Нэвтрэх'),
-                        onPressed: () async {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            await signIn();
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Color(0xFF6750A4),
-                              duration: Duration(seconds: 1),
-                              margin: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height - 100,
-                                  right: 20,
-                                  left: 20),
-                              content: Text(
-                                'Амжилттай нэвтэрлээ.',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
-                              ),
-                            ));
-                          }
-                        }),
-                    SizedBox(height: 24),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          await signIn();
+                        }
+                      },
+                      child: Text('Нэвтрэх'),
+                    ),
+                    const SizedBox(height: 24),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(
+                        Navigator.push(
                             context,
                             MaterialPageRoute(
                                 builder: (context) => SignUpScreen()));
@@ -222,7 +231,7 @@ class _SignInScreenState extends State<SignInScreen> {
               child: Center(
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Color(0xFF6750A4),
+                  color: const Color.fromARGB(255, 51, 51, 51),
                 ),
               ),
             ),

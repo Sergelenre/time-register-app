@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:timo/pages/navigator/slide_tab_bar.dart';
+import 'package:timo/pages/request/widgets/sent_leave.dart';
+import 'package:timo/pages/request/widgets/sent_vac.dart';
 
 import '../../navigator/navigtor.dart';
-import '../../navigator/slide_tab_bar.dart';
-import '../widgets/sent_leave.dart';
-import '../widgets/sent_vac.dart';
 
 class SentRequests extends StatefulWidget {
   const SentRequests({super.key});
@@ -37,7 +36,7 @@ class _SentRequestsState extends State<SentRequests>
       appBar: AppBar(
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Ionicons.chevron_back, color: Colors.black),
           onPressed: () {
             Navigator.pushReplacement(
                 context,
@@ -74,8 +73,8 @@ class _SentRequestsState extends State<SentRequests>
                     children: [
                       TabBar(
                         indicatorSize: TabBarIndicatorSize.label,
-                        indicatorColor: Color(0xFF6750A4),
-                        labelColor: Color(0xFF6750A4),
+                        indicatorColor: Color.fromARGB(255, 51, 51, 51),
+                        labelColor: Color.fromARGB(255, 51, 51, 51),
                         controller: tabController,
                         tabs: [
                           Tab(text: 'Амралт'),

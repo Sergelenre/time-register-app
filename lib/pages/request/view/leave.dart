@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:timo/pages/navigator/slide_tab_bar.dart';
 
 import '../../navigator/navigtor.dart';
-import '../../navigator/slide_tab_bar.dart';
 
 class LeaveFormScreen extends StatefulWidget {
   const LeaveFormScreen({super.key});
@@ -115,7 +117,7 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
       appBar: AppBar(
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Ionicons.chevron_back_outline, color: Colors.black),
           onPressed: () {
             Navigator.pushReplacement(
                 context,
@@ -149,25 +151,48 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                     },
                     child: Container(
                       padding: EdgeInsets.only(
-                          left: 4, top: 15, bottom: 15, right: 4),
+                          left: 12, top: 15, bottom: 15, right: 12),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(width: 1, color: Colors.grey),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
                         '${_startDate.year}-${_startDate.month.toString().padLeft(2, '0')}-${_startDate.day.toString().padLeft(2, '0')} ${_startDate.hour.toString().padLeft(2, '0')}:${_startDate.minute.toString().padLeft(2, '0')}',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
                   ),
                   Text("to"),
                   InkWell(
+                    onTap: () {
+                      _selectEndDate(context);
+                    },
                     child: Container(
                       padding: EdgeInsets.only(
-                          left: 4, top: 15, bottom: 15, right: 4),
+                          left: 12, top: 15, bottom: 15, right: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Text(
                         '${_endDate.year}-${_endDate.month.toString().padLeft(2, '0')}-${_endDate.day.toString().padLeft(2, '0')} ${_endDate.hour.toString().padLeft(2, '0')}:${_endDate.minute.toString().padLeft(2, '0')}',
-                        style: TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
                   ),
@@ -189,11 +214,16 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                   controller: _textController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
+                  cursorColor: Colors.grey,
                   decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Color.fromARGB(255, 233, 233, 233)),
+                    ),
                     enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Color(0xFFF7F2FA))),
                     filled: true,
-                    fillColor: Color(0xFFF7F2FA),
+                    fillColor: Color.fromARGB(255, 233, 233, 233),
                     hintText: 'Шалтгаан',
                     hintStyle: TextStyle(
                       color: Color(0xFF79747E),
@@ -213,8 +243,11 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                     Container(
                       width: 190.0,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(width: 1, color: Colors.grey)),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            width: 1,
+                            color: Color.fromARGB(255, 235, 235, 235)),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: DropdownButton<String>(
@@ -248,8 +281,11 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                     Container(
                       width: 190.0,
                       decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          border: Border.all(width: 1, color: Colors.grey)),
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                            width: 1,
+                            color: Color.fromARGB(255, 235, 235, 235)),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0),
                         child: DropdownButton<String>(
@@ -304,52 +340,38 @@ class _LeaveFormScreenState extends State<LeaveFormScreen> {
                     'Approvers': [dropdownValuePmLeader, dropdownValueAdmin],
                   };
                   firestore.collection('leave').add(data).then((value) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      backgroundColor: Color(0xFF6750A4),
-                      duration: Duration(seconds: 1),
-                      margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height - 170,
-                          right: 20,
-                          left: 20),
-                      content: Text(
-                        'Амжилттай',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                    ));
-                  }).catchError((error) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      backgroundColor: Color(0xFF6750A4),
-                      duration: Duration(seconds: 1),
-                      margin: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).size.height,
-                          right: 20,
-                          left: 20),
-                      content: Text(
-                        'Амжилтгүй',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                    ));
-                  });
-                  Navigator.pushReplacement(
+                    Fluttertoast.showToast(
+                      msg: "Амжилттай",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Color.fromARGB(255, 50, 138, 91),
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => BottomNavigationScreen()));
+                          builder: (context) => BottomNavigationScreen()),
+                    );
+                  }).catchError((error) {
+                    Fluttertoast.showToast(
+                      msg: "Амжилтгүй",
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.TOP,
+                      timeInSecForIosWeb: 1,
+                      backgroundColor: Color.fromARGB(255, 253, 96, 65),
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  });
                 }
               },
               child: Container(
                 height: 52,
-                margin: EdgeInsets.only(top: 80),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25),
-                  color: const Color(0xFF6750A4),
+                  color: Color.fromARGB(255, 43, 43, 43),
                 ),
                 child: Center(
                   child: Text(

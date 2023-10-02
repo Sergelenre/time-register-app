@@ -2,23 +2,21 @@ import 'dart:async';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dart_ipify/dart_ipify.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:timo/pages/auth/sign_up.dart';
-import 'package:timo/server/user.dart';
-
-import '../../auth/sign_in.dart';
-import '../../history/view/history_screen.dart';
-import '../../navigator/slide_tab_bar.dart';
-import '../../../domain/device/dev_id.dart';
-import '../../../domain/other/saved_data_green.dart';
-import '../../../domain/other/get_name.dart';
-import '../../../domain/other/saved_data_blue.dart';
-import '../widgets/end_button.dart';
-import '../widgets/start_button.dart';
+import 'package:timo/domain/device/dev_id.dart';
+import 'package:timo/domain/other/get_name.dart';
+import 'package:timo/domain/other/saved_data_blue.dart';
+import 'package:timo/domain/other/saved_data_green.dart';
+import 'package:timo/pages/auth/sign_in.dart';
+import 'package:timo/pages/history/view/history_screen.dart';
+import 'package:timo/pages/home/widgets/end_button.dart';
+import 'package:timo/pages/home/widgets/start_button.dart';
+import 'package:timo/pages/navigator/slide_tab_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -145,11 +143,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.logout_sharp, color: Colors.black),
+          icon: Icon(Ionicons.log_out_outline, color: Colors.black),
           onPressed: () async {
             await clearPrefs();
             Navigator.pushReplacement(context,
@@ -162,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
+            icon: Icon(Ionicons.menu_outline, color: Colors.black),
             onPressed: () {
               _scaffoldKey.currentState!.openEndDrawer();
             },
@@ -171,17 +170,22 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.transparent,
       ),
       endDrawer: Drawer(
-        backgroundColor: Color(0xFFE7E0EC),
+        backgroundColor: Color.fromARGB(255, 51, 51, 51),
         width: 200,
         child: SideTabBar(),
       ),
       extendBodyBehindAppBar: true,
       body: Padding(
-        padding: const EdgeInsets.only(left: 30, right: 30),
+        padding: const EdgeInsets.only(left: 30, top: 80, right: 30),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(width: 250, child: Image.asset('assets/imgs/logo.jpg')),
+            Container(
+              width: 250,
+              child: Image.asset(
+                'assets/imgs/logo.jpg',
+                width: 280,
+              ),
+            ),
             Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -225,49 +229,32 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         if (lastClickedDate != null &&
                             lastClickedDate == currentDate) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            backgroundColor: Colors.red,
-                            duration: Duration(seconds: 1),
-                            margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height - 170,
-                              right: 20,
-                              left: 20,
-                            ),
-                            content: Text(
-                              'Аль хэдийн дарагдсан байна',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
-                            ),
-                          ));
+                          Fluttertoast.showToast(
+                            msg: "Аль хэдийн дарагдсан байна.",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Color.fromARGB(255, 253, 96, 65),
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
                           return;
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: "Амжилттай",
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 1,
+                            backgroundColor: Color.fromARGB(255, 50, 138, 91),
+                            textColor: Colors.white,
+                            fontSize: 16.0,
+                          );
                         }
 
                         prefs.setString('lastClickedDate', currentDate);
 
                         SavedDataGreen().initalGetSavedData(context);
                         myInstance.getName(1, identifier);
-
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Color(0xFF6750A4),
-                          duration: Duration(seconds: 1),
-                          margin: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).size.height - 170,
-                            right: 20,
-                            left: 20,
-                          ),
-                          content: Text(
-                            'Амжилттай',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ));
                       },
                       child: const StartButton(),
                     ),
@@ -277,22 +264,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         saveddataB.initalGetSavedDataBlue(context);
                         myInstance.getName(0, identifier);
 
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          backgroundColor: Color(0xFF6750A4),
-                          duration: Duration(seconds: 1),
-                          margin: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height - 170,
-                              right: 20,
-                              left: 20),
-                          content: Text(
-                            'Амжилттай',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
-                          ),
-                        ));
+                        Fluttertoast.showToast(
+                          msg: "Амжилттай",
+                          toastLength: Toast.LENGTH_LONG,
+                          gravity: ToastGravity.TOP,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Color.fromARGB(255, 50, 138, 91),
+                          textColor: Colors.white,
+                          fontSize: 16.0,
+                        );
                       },
                       child: const EndButton(),
                     ),

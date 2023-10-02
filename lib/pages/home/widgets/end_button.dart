@@ -9,12 +9,12 @@ class EndButton extends StatelessWidget {
       height: 80,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: const Color(0xFFCCC2DC),
+        color: Color.fromARGB(255, 233, 240, 242),
       ),
       child: Center(
         child: const Text(
           'Явсан',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
     );

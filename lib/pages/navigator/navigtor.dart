@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:timo/pages/request/view/main_request.dart';
-
-import '../calendar/calendar_history.dart';
-import '../history/view/history_screen.dart';
-import '../home/view/home_screen.dart';
+import 'package:ionicons/ionicons.dart';
+import 'package:timo/pages/calendar/calendar_history.dart';
+import 'package:timo/pages/history/view/history_screen.dart';
+import 'package:timo/pages/home/view/home_screen.dart';
+// import 'package:timo/pages/request/view/main_request.dart';
 
 class BottomNavigationScreen extends StatefulWidget {
   const BottomNavigationScreen({super.key});
@@ -22,54 +22,67 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
     const HistoryScreen(),
     CalendarScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: screens[_currentIndex],
-      bottomNavigationBar: SizedBox(
-        height: 70,
-        child: BottomNavigationBar(
-          elevation: 0.0,
-          backgroundColor: const Color(0xFFE7E0EC),
-          selectedItemColor: Color.fromARGB(255, 19, 19, 19),
-          unselectedItemColor: Color.fromARGB(255, 19, 19, 19),
-          iconSize: 30,
-          selectedFontSize: 12,
-          unselectedFontSize: 10,
-          showUnselectedLabels: false,
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _currentIndex,
-          onTap: (index) => setState(
-            () => _currentIndex = index,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: Offset(0, 3),
+              ),
+            ],
           ),
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(
-                size: 20,
-                Icons.home_rounded,
-                color: Color.fromARGB(255, 19, 19, 19),
+          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          margin: EdgeInsets.symmetric(horizontal: 20),
+          child: BottomNavigationBar(
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            selectedItemColor: Color.fromARGB(255, 0, 0, 0),
+            unselectedItemColor: Color.fromARGB(255, 19, 19, 19),
+            iconSize: 18,
+            selectedFontSize: 12,
+            unselectedFontSize: 10,
+            showUnselectedLabels: false,
+            type: BottomNavigationBarType.fixed,
+            currentIndex: _currentIndex,
+            onTap: (index) => setState(() => _currentIndex = index),
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Ionicons.ellipse_outline,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+                label: "Нүүр",
               ),
-              label: "Нүүр",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                size: 20,
-                Icons.history_rounded,
-                color: Color.fromARGB(255, 19, 19, 19),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Ionicons.time_outline,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+                label: "Түүх",
               ),
-              label: "Түүх",
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(
-                Icons.calendar_month_outlined,
-                size: 20,
-                color: Color.fromARGB(255, 19, 19, 19),
+              BottomNavigationBarItem(
+                icon: Icon(
+                  Ionicons.calendar_outline,
+                  color: Color.fromARGB(255, 0, 0, 0),
+                ),
+                label: "Календар",
               ),
-              label: "Календар",
-            ),
-          ],
+            ],
+          ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

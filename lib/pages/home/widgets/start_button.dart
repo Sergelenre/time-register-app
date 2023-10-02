@@ -9,13 +9,13 @@ class StartButton extends StatelessWidget {
       height: 80,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(50),
-        color: const Color(0xFF6750A4),
+        color: Color.fromARGB(255, 51, 51, 51),
       ),
       child: Center(
         child: const Text(
           'Ирсэн',
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
     );

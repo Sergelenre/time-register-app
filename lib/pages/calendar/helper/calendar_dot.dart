@@ -12,7 +12,8 @@ class CalendarDot extends StatelessWidget {
       height: 7,
       width: 7,
       decoration: const BoxDecoration(
-        color: Color(0xFF21005D),
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: Color.fromARGB(255, 121, 121, 121),
       ),
       child: Text(
         ".",

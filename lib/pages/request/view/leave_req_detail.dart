@@ -111,12 +111,12 @@ class _FirestoreListWidgetLeaveState extends State<FirestoreListWidgetLeave> {
                   child: Row(
                     children: [
                       Text(
-                        DateFormat('MMM d, yyyy')
+                        DateFormat('MMM d, yyyy, HH:mm')
                             .format(widget.document['startDate'].toDate()),
                       ),
                       Text(" - "),
                       Text(
-                        DateFormat('MMM d, yyyy')
+                        DateFormat('MMM d, yyyy, HH:mm')
                             .format(widget.document['endDate'].toDate()),
                       ),
                     ],

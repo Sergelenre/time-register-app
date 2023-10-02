@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:timo/pages/calendar/helper/calendar_dot.dart';
+import 'package:timo/pages/calendar/helper/date_format.dart';
+import 'package:timo/pages/navigator/slide_tab_bar.dart';
 
-import '../../domain/device/dev_id.dart';
 import '../navigator/navigtor.dart';
-import '../navigator/slide_tab_bar.dart';
-import 'helper/calendar_dot.dart';
-import 'helper/date_format.dart';
 
 class CalendarScreen extends StatefulWidget {
   const CalendarScreen({Key? key});
@@ -38,7 +37,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       appBar: AppBar(
         elevation: 0.0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Ionicons.chevron_back_outline, color: Colors.black),
           onPressed: () {
             Navigator.pushReplacement(
                 context,
@@ -52,7 +51,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.menu, color: Colors.black),
+            icon: Icon(Ionicons.menu_outline, color: Colors.black),
             onPressed: () {
               _scaffoldKey.currentState!.openEndDrawer();
             },
@@ -61,7 +60,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
         backgroundColor: Colors.transparent,
       ),
       endDrawer: Drawer(
-        backgroundColor: Color(0xFFE7E0EC),
+        backgroundColor: Color.fromARGB(255, 51, 51, 51),
         width: 200,
         child: SideTabBar(),
       ),
@@ -73,10 +72,18 @@ class _CalendarScreenState extends State<CalendarScreen> {
               headerStyle: const HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
+                leftChevronIcon: Icon(
+                  Icons.chevron_left,
+                  color: Colors.black,
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right,
+                  color: Colors.black,
+                ),
               ),
               calendarStyle: CalendarStyle(
                 todayDecoration: BoxDecoration(
-                  color: Color(0xFF6750A4),
+                  color: Color.fromARGB(255, 51, 51, 51),
                   shape: BoxShape.circle,
                 ),
               ),
@@ -106,7 +113,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       );
                     } else {
                       return AlertDialog(
-                        title: Text("Selected Date and Time"),
+                        title: Text("Ирсэн болон Явсан цаг"),
                         content: Text("Цаг байхгүй"),
                         actions: [
                           TextButton(

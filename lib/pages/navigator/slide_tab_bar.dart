@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../request/view/leave.dart';
-import '../request/view/request_list.dart';
-import '../request/view/sent_request.dart';
-import '../request/view/vacation.dart';
+import 'package:timo/pages/request/view/leave.dart';
+import 'package:timo/pages/request/view/request_list.dart';
+import 'package:timo/pages/request/view/sent_request.dart';
+import 'package:timo/pages/request/view/vacation.dart';
 
 class SideTabBar extends StatefulWidget {
   const SideTabBar({super.key});
@@ -37,43 +36,58 @@ class _SideTabBarState extends State<SideTabBar> {
       padding: EdgeInsets.zero,
       children: [
         Container(
-          height: 100,
+          height: 110,
           child: DrawerHeader(
-            child: Text('Хүсэлтүүд',
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(
+              'Хүсэлтүүд',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ),
             decoration: BoxDecoration(
-              color: Color(0xFFE7E0EC),
+              color: Color.fromARGB(255, 51, 51, 51),
             ),
           ),
         ),
         ListTile(
-          title: Text('Амралт'),
+          title: Text(
+            'Амралт',
+            style: TextStyle(color: Colors.white),
+          ),
           onTap: () {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => VacationScreen()));
           },
         ),
         ListTile(
-          title: Text('Чөлөө'),
+          title: Text(
+            'Чөлөө',
+            style: TextStyle(color: Colors.white),
+          ),
           onTap: () {
             Navigator.pushReplacement(context,
                 MaterialPageRoute(builder: (context) => LeaveFormScreen()));
           },
         ),
         ListTile(
-          title: Text('Бусад'),
+          title: const Text(
+            'Бусад',
+            style: TextStyle(color: Colors.white),
+          ),
           onTap: () {
             print('s');
           },
         ),
         Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               border: Border(
             bottom:
-                BorderSide(color: Color.fromARGB(255, 219, 219, 219), width: 1),
+                BorderSide(color: Color.fromARGB(255, 41, 41, 41), width: 1),
           )),
           child: ListTile(
-            title: Text('Илгээсэн хүсэлтүүд'),
+            title: Text(
+              'Илгээсэн хүсэлтүүд',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => SentRequests()));
@@ -82,7 +96,10 @@ class _SideTabBarState extends State<SideTabBar> {
         ),
         if (role == 'PM' || role == 'Admin' || role == 'Team Leader')
           ListTile(
-            title: Text('Ирсэн хүсэлтүүд'),
+            title: Text(
+              'Ирсэн хүсэлтүүд',
+              style: TextStyle(color: Colors.white),
+            ),
             onTap: () {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (context) => RequestListScreen()));
