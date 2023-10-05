@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timo/pages/auth/sign_in.dart';
 import 'package:timo/pages/auth/widgets/reusable.dart';
-
-import '../navigator/navigtor.dart';
+import 'package:timo/pages/navigator/navigtor.dart';
 
 TextEditingController passwordTextController = TextEditingController();
 TextEditingController nameTextController = TextEditingController();
@@ -14,28 +15,27 @@ TextEditingController emailTextController = TextEditingController();
 TextEditingController phoneTextController = TextEditingController();
 
 class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
+  const SignUpScreen({Key? key});
 
   @override
   State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final GlobalKey<FormState> _formKey =
+      GlobalKey<FormState>(); // Define _formKey here
   bool hasClickedButton = false;
-  @override
-  void initState() {
-    super.initState();
-  }
+  bool isLoading = false;
 
   String? nameValidator(String? value) {
-    if (value! == null || value.isEmpty) {
+    if (value == null || value.isEmpty) {
       return 'Нэрээ оруулна уу';
     }
     return null;
   }
 
   String? emailValidator(String? value) {
-    if (value! == null || value.isEmpty) {
+    if (value == null || value.isEmpty) {
       return 'Имэйл хаягаа оруулна уу';
     }
     if (!EmailValidator.validate(value)) {
@@ -45,7 +45,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   String? passwordValidator(String? value) {
-    if (value! == null || value.isEmpty) {
+    if (value == null || value.isEmpty) {
       return 'Нууц үгээ оруулна уу';
     }
     if (value.length < 6) {
@@ -56,7 +56,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   List<String> roles = ['PM', 'Team Leader', 'Developer', 'Admin'];
   String roleValue = 'PM';
-  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +67,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           appBar: AppBar(
             elevation: 0.0,
             leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.black),
+              icon: Icon(Ionicons.chevron_back, color: Colors.black),
               onPressed: () {
-                Navigator.of(context).pop(SignInScreen());
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => SignInScreen()));
               },
             ),
             title: Text(
@@ -86,184 +86,203 @@ class _SignUpScreenState extends State<SignUpScreen> {
               decoration: const BoxDecoration(color: Colors.white),
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 150, right: 30, left: 30),
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: emailTextController,
-                        cursorColor: Colors.grey,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          errorText: hasClickedButton
-                              ? emailValidator(emailTextController.text)
-                              : null,
-                          labelText: 'Цахим хаяг',
-                          labelStyle: TextStyle(color: Colors.grey),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: nameTextController,
-                        cursorColor: Colors.grey,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          errorText: hasClickedButton
-                              ? nameValidator(nameTextController.text)
-                              : null,
-                          labelText: 'Нэр',
-                          labelStyle: TextStyle(color: Colors.grey),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        controller: passwordTextController,
-                        cursorColor: Colors.grey,
-                        textInputAction: TextInputAction.next,
-                        decoration: InputDecoration(
-                          errorText: hasClickedButton
-                              ? passwordValidator(passwordTextController.text)
-                              : null,
-                          enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.grey)),
-                          labelText: 'Password',
-                          labelStyle: TextStyle(color: Colors.grey),
-                          border: OutlineInputBorder(),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                        ),
-                        obscureText: true,
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text("Role :", style: TextStyle(fontSize: 20)),
-                          Container(
-                            padding: EdgeInsets.only(right: 10, left: 10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border:
-                                    Border.all(width: 1, color: Colors.grey)),
-                            child: DropdownButton<String>(
-                              value: roleValue,
-                              items: roles.map<DropdownMenuItem<String>>(
-                                  (String value) {
-                                return DropdownMenuItem<String>(
-                                    value: value, child: Text(value));
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                print("click  sss");
-                                setState(() {
-                                  roleValue = newValue ?? '';
-                                });
-                                print(roleValue);
-                              },
+                  padding: const EdgeInsets.only(top: 150, right: 30, left: 30),
+                  child: Form(
+                    key: _formKey, // Use _formKey here
+                    child: Column(
+                      children: <Widget>[
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: emailTextController,
+                          cursorColor: Colors.grey,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Ionicons.mail_outline,
+                              color: Color.fromARGB(255, 187, 187, 187),
+                            ),
+                            labelText: 'Цахим хаяг',
+                            labelStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: const Color.fromARGB(255, 212, 212, 212),
+                              ),
+                            ),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
                             ),
                           ),
-                        ],
-                      ),
-                      signInSignUpButton(context, false, () async {
-                        setState(() {
-                          isLoading = true;
-                          hasClickedButton = true;
-                        });
-                        if (nameTextController.text.isEmpty ||
-                            emailTextController.text.isEmpty ||
-                            passwordTextController.text.isEmpty) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Бүгдийг нь бөглөнө үү")),
-                          );
-                          return;
-                        }
-
-                        try {
-                          UserCredential userCredential = await FirebaseAuth
-                              .instance
-                              .createUserWithEmailAndPassword(
-                                  email: emailTextController.text,
-                                  password: passwordTextController.text);
-                          final prefs = await SharedPreferences.getInstance();
-                          prefs.setString('role', roleValue);
-                          prefs.setString('email', emailTextController.text);
-                          prefs.setString('name', nameTextController.text);
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      BottomNavigationScreen()));
-                          final FirebaseFirestore firestore =
-                              FirebaseFirestore.instance;
-                          final Map<String, dynamic> data = {
-                            'name': nameTextController.text,
-                            'email': emailTextController.text,
-                            'role': roleValue,
-                          };
-                          firestore
-                              .collection('workers')
-                              .add(data)
-                              .then((value) async {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Color(0xFF6750A4),
-                              duration: Duration(seconds: 1),
-                              margin: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height - 150,
-                                  right: 20,
-                                  left: 20),
-                              content: Text(
-                                'Амжилттай бүртгэгдлээ.',
-                                style: TextStyle(color: Colors.white),
+                          validator: emailValidator,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: nameTextController,
+                          cursorColor: Colors.grey,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Ionicons.person_outline,
+                              color: Color.fromARGB(255, 187, 187, 187),
+                            ),
+                            labelText: 'Нэр',
+                            labelStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 212, 212, 212),
                               ),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                            ),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          validator: nameValidator,
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: passwordTextController,
+                          cursorColor: Colors.grey,
+                          textInputAction: TextInputAction.next,
+                          decoration: InputDecoration(
+                            icon: Icon(
+                              Ionicons.lock_closed_outline,
+                              color: Color.fromARGB(255, 187, 187, 187),
+                            ),
+                            labelText: 'Нууц үг',
+                            labelStyle:
+                                TextStyle(color: Colors.grey, fontSize: 14),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(25.0),
+                              borderSide: BorderSide(
+                                color: Color.fromARGB(255, 212, 212, 212),
                               ),
-                            ));
-                          }).catchError((error) {
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                              backgroundColor: Color(0xFF6750A4),
-                              duration: Duration(seconds: 1),
-                              margin: EdgeInsets.only(
-                                  bottom:
-                                      MediaQuery.of(context).size.height - 170,
-                                  right: 20,
-                                  left: 20),
-                              content: Text(
-                                'Амжилтгүй.',
-                                style: TextStyle(color: Colors.white),
+                            ),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey),
+                            ),
+                          ),
+                          obscureText: true,
+                          validator: passwordValidator,
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("Role :", style: TextStyle(fontSize: 20)),
+                            Container(
+                              padding:
+                                  const EdgeInsets.only(right: 10, left: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.2),
+                                    spreadRadius: 5,
+                                    blurRadius: 7,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                              child: DropdownButton<String>(
+                                value: roleValue,
+                                items: roles.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    roleValue = newValue ?? '';
+                                  });
+                                },
                               ),
-                            ));
+                            ),
+                          ],
+                        ),
+                        signInSignUpButton(context, false, () async {
+                          setState(() {
+                            hasClickedButton = true;
                           });
-                        } on FirebaseAuthException catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(e.message ?? "Амжилтгүй")),
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Амжилтгүй")),
-                          );
-                        }
-                        setState(() {
-                          isLoading = false; // hide loading indicator
-                        });
-                      })
-                    ],
+                          if (_formKey.currentState!.validate()) {
+                            isLoading = true;
+                            try {
+                              UserCredential userCredential = await FirebaseAuth
+                                  .instance
+                                  .createUserWithEmailAndPassword(
+                                      email: emailTextController.text,
+                                      password: passwordTextController.text);
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setString('role', roleValue);
+                              prefs.setString(
+                                  'email', emailTextController.text);
+                              prefs.setString('name', nameTextController.text);
+
+                              final FirebaseFirestore firestore =
+                                  FirebaseFirestore.instance;
+                              final Map<String, dynamic> data = {
+                                'name': nameTextController.text,
+                                'email': emailTextController.text,
+                                'role': roleValue,
+                              };
+                              firestore
+                                  .collection('workers')
+                                  .add(data)
+                                  .then((value) async {
+                                Fluttertoast.showToast(
+                                  msg: "Амжилттай Бүртгэгдлээ",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.TOP,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 50, 138, 91),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            BottomNavigationScreen()));
+                              }).catchError((error) {
+                                Fluttertoast.showToast(
+                                  msg: "Амжилтгүй",
+                                  toastLength: Toast.LENGTH_LONG,
+                                  gravity: ToastGravity.TOP,
+                                  timeInSecForIosWeb: 1,
+                                  backgroundColor:
+                                      Color.fromARGB(255, 253, 96, 65),
+                                  textColor: Colors.white,
+                                  fontSize: 16.0,
+                                );
+                              });
+                            } on FirebaseAuthException catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                    content: Text(e.message ?? "Амжилтгүй")),
+                              );
+                            } catch (e) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("Амжилтгүй")),
+                              );
+                            }
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
+                        })
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -276,7 +295,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             child: Center(
               child: CircularProgressIndicator(
                 strokeWidth: 2,
-                color: Color(0xFF6750A4),
+                color: Color.fromARGB(255, 51, 51, 51),
               ),
             ),
           ),

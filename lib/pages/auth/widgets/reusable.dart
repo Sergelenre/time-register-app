@@ -76,9 +76,9 @@ Container signInSignUpButton(
       style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith((states) {
             if (states.contains(MaterialState.pressed)) {
-              return Color(0xFF6750A4);
+              return Color.fromARGB(255, 51, 51, 51);
             }
-            return Color(0xFF6750A4);
+            return Color.fromARGB(255, 51, 51, 51);
           }),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)))),
